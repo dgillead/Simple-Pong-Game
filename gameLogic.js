@@ -13,6 +13,14 @@ const WINNING_SCORE = 5;
 const PADDLE_HEIGHT = 100;
 const PADDLE_THICKNESS = 10;
 
+function handleMouseClick(evt) {
+  if (showingWinScreen) {
+    player1Score = 0;
+    computerScore = 0;
+    showingWinScreen = false;
+  }
+}
+
 window.onload = function() {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
@@ -21,6 +29,8 @@ window.onload = function() {
 
   var framesPerSecond = 60;
   setInterval(callBoth, 1000/framesPerSecond);
+
+  window.addEventListener("mousedown", handleMouseClick);
 
   window.addEventListener("mousemove",
     function(evt) {
@@ -49,8 +59,6 @@ function callBoth() {
 // reset ball position, speed of ball and reverse direction
 function ballReset() {
   if (player1Score >= WINNING_SCORE || computerScore >= WINNING_SCORE) {
-    player1Score = 0;
-    computerScore = 0;
     showingWinScreen = true;
   }
   ballSpeedX = 5;
@@ -62,9 +70,9 @@ function ballReset() {
 function computerMovement() {
  var paddle2YCenter = paddle2Y + (PADDLE_HEIGHT / 2);
   if (paddle2YCenter < ballY) {
-    paddle2Y += 4.8;
+    paddle2Y += 4.7;
   } else {
-    paddle2Y -= 4.8;
+    paddle2Y -= 4.7;
   }
 }
 
@@ -119,15 +127,28 @@ function colorCircle(centerX, centerY, radius, drawColor) {
   canvasContext.fill();
 }
 
+function drawNet() {
+  for (var i = 0; i < canvas.height; i += 40) {
+    colorRect(canvas.width / 2 - 1, i, 2, 20, "white");
+  }
+}
+
 function drawEverything() {
   // draw play area
   colorRect(0, 0, canvas.width, canvas.height, "black");
 
   if (showingWinScreen) {
     canvasContext.fillStyle = "white";
-    canvasContext.fillText("Click to continue...", 100, 100);
+    canvasContext.fillText("Click to continue...", canvas.width / 2 , canvas.height / 2);
+    if (player1Score >= WINNING_SCORE) {
+      canvasContext.fillText("You Won!", 350, 200);
+    } else if (computerScore >= WINNING_SCORE) {
+      canvasContext.fillText("The Computer Won!", 350, 300);
+    }
     return;
   }
+
+  drawNet();
 
   // draw left player paddle
   colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
