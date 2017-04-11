@@ -8,6 +8,8 @@ var paddle1Y = 35;
 var paddle2Y = 35;
 var player1Score = 0;
 var computerScore = 0;
+var showingWinScreen = false;
+const WINNING_SCORE = 5;
 const PADDLE_HEIGHT = 100;
 const PADDLE_THICKNESS = 10;
 
@@ -46,6 +48,11 @@ function callBoth() {
 
 // reset ball position, speed of ball and reverse direction
 function ballReset() {
+  if (player1Score >= WINNING_SCORE || computerScore >= WINNING_SCORE) {
+    player1Score = 0;
+    computerScore = 0;
+    showingWinScreen = true;
+  }
   ballSpeedX = 5;
   ballSpeedX = -ballSpeedX;
   ballX = canvas.width / 2;
@@ -55,14 +62,17 @@ function ballReset() {
 function computerMovement() {
  var paddle2YCenter = paddle2Y + (PADDLE_HEIGHT / 2);
   if (paddle2YCenter < ballY) {
-    paddle2Y += 5;
+    paddle2Y += 4.8;
   } else {
-    paddle2Y -= 5;
+    paddle2Y -= 4.8;
   }
 }
 
 // really sloppy, try to trim later
 function moveEverything() {
+  if (showingWinScreen) {
+    return;
+  }
   computerMovement();
 
   ballX += ballSpeedX;
@@ -113,13 +123,19 @@ function drawEverything() {
   // draw play area
   colorRect(0, 0, canvas.width, canvas.height, "black");
 
+  if (showingWinScreen) {
+    canvasContext.fillStyle = "white";
+    canvasContext.fillText("Click to continue...", 100, 100);
+    return;
+  }
+
   // draw left player paddle
   colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
 
   // draw right computer paddle
   colorRect(canvas.width - PADDLE_THICKNESS, paddle2Y, PADDLE_THICKNESS, 100, "white");
 
-  //draw ball
+  // draw ball
   colorCircle(ballX, ballY, 5, "white");
 
   // draw scores
