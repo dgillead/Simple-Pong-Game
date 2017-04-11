@@ -38,11 +38,13 @@ function calculateMousePos(evt) {
   }
 }
 
+// re-factor later, this function is probably not necessary
 function callBoth() {
   moveEverything();
   drawEverything();
 }
 
+// reset ball position, speed of ball and reverse direction
 function ballReset() {
   ballSpeedX = 5;
   ballSpeedX = -ballSpeedX;
@@ -59,6 +61,7 @@ function computerMovement() {
   }
 }
 
+// really sloppy, try to trim later
 function moveEverything() {
   computerMovement();
 
@@ -66,6 +69,8 @@ function moveEverything() {
   ballY += ballSpeedY;
 
   if (ballX > canvas.width || ballX < 0) {
+    // if ball comes in contact with either paddle reverse direction and increase
+    // speed of ball
     if ((ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) ||
        (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT && ballX > canvas.width / 2)) {
          ballSpeedX = -ballSpeedX;
@@ -90,11 +95,13 @@ function moveEverything() {
   }
 }
 
+// draw rectangles
 function colorRect(leftX, topY, width, height, drawColor) {
   canvasContext.fillStyle = drawColor;
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
+// draw circles
 function colorCircle(centerX, centerY, radius, drawColor) {
   canvasContext.fillStyle = drawColor;
   canvasContext.beginPath();
@@ -115,6 +122,7 @@ function drawEverything() {
   //draw ball
   colorCircle(ballX, ballY, 5, "white");
 
+  // draw scores
   canvasContext.fillText(player1Score, 100, 100);
   canvasContext.fillText(computerScore, canvas.width - 100, 100);
 }
